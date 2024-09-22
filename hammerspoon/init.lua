@@ -2,6 +2,22 @@ require('hs.ipc')
 require('hs.mouse')
 require('spring')
 
+hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "t", function()
+  print("Hello World!")
+  hs.osascript.applescript([[
+    tell application "Vivaldi"
+      if (count of windows) is 0 then
+        activate
+        tell application "System Events"
+            keystroke "t" using command down
+        end tell
+      else
+        make new window
+      end if
+    end tell
+  ]])
+end)
+
 local time_start = 0
 function TimeStart()
     time_start = hs.timer.secondsSinceEpoch()
