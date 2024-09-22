@@ -8,6 +8,7 @@ hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "t", function()
     tell application "Vivaldi"
       if (count of windows) is 0 then
         activate
+        delay 0.1
         tell application "System Events"
             keystroke "t" using command down
         end tell
