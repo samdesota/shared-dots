@@ -2,7 +2,7 @@
   "name": "codemods",
   "displayName": "codemods",
   "description": "Sam's custom code modifications",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -26,7 +26,7 @@
     ]
   },
   "scripts": {
-    "vsix": "vsce package --out latest.vsix",
+    "vsix": "npm version patch && vsce package --out latest.vsix",
     "vscode:prepublish": "pnpm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
