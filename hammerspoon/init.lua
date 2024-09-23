@@ -29,12 +29,12 @@ end)
 
 function applicationWatcher(appName, eventType, appObject)
   if (eventType == hs.application.watcher.activated) then
-      if (appName == "Code - Insiders" or appName == "Visual Studio Code") then
+      if (appName == "Code - Insiders" or appName == "Code") then
         shell_binding:disable()
       end
   end
   if (eventType == hs.application.watcher.deactivated) then
-      if (appName == "Code - Insiders" or appName == "Visual Studio Code") then
+      if (appName == "Code - Insiders" or appName == "Code") then
         print("Code is deactivated")
         shell_binding:enable()
       end
