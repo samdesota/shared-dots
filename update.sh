@@ -14,4 +14,4 @@ hs -c "hs.reload()"
 
 echo "### Installing latest codemods ###"
 cd ../codemods
-code --install-extension latest.vsix
+code --force --install-extension latest.vsix

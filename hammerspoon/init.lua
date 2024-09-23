@@ -23,31 +23,26 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "h", function()
   hs.reload()
 end)
 
-local VSCode = "Code - Insiders"
-
-hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "s", function()
-  local frontmostApp = hs.application.frontmostApplication()
-  print(frontmostApp:name())
-  if frontmostApp:name() == VSCode then
-    local window = frontmostApp:focusedWindow()
-    if window then
-      local title = window:title()
-      print(title)
-      local path = title:match("([^%s]+)$")
-      if path then
-        hs.urlevent.openURL("warp://action/new_window?path=" .. path)
-      else
-        print("No path found in window title")
-      end
-    else
-      print("No focused window found")
-    end
-  else
-    hs.urlevent.openURL("warp://action/new_window?path=~")
-  end
-
-  -- hs.urlevent.openURL("warp://action/new_window?path=~")
+local shell_binding = hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "s", function()
+  hs.urlevent.openURL("warp://action/new_window?path=~")
 end)
+
+function applicationWatcher(appName, eventType, appObject)
+  if (eventType == hs.application.watcher.activated) then
+      if (appName == "Code - Insiders" or appName == "Visual Studio Code") then
+        shell_binding:disable()
+      end
+  end
+  if (eventType == hs.application.watcher.deactivated) then
+      if (appName == "Code - Insiders" or appName == "Visual Studio Code") then
+        print("Code is deactivated")
+        shell_binding:enable()
+      end
+  end
+end
+appWatcher = hs.application.watcher.new(applicationWatcher)
+appWatcher:start()
+
 
 local time_start = 0
 function TimeStart()

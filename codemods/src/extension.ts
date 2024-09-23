@@ -27,6 +27,24 @@ export function activate(context: vscode.ExtensionContext) {
   };
 
   vscode.commands.registerCommand(
+    "codemods.openWarpTerminalWithCurrentWorkspace",
+    async () => {
+      const workspaceFolders = vscode.workspace.workspaceFolders;
+      const open = await import("open");
+
+      if (!workspaceFolders || workspaceFolders.length === 0) {
+        return;
+      }
+
+      const workspaceFolder = workspaceFolders[0];
+
+      open.default(
+        `warp://action/new_window?path=${encodeURIComponent(workspaceFolder.uri.fsPath)}`,
+      );
+    },
+  );
+
+  vscode.commands.registerCommand(
     "codemods.openTerminalInNewWindow",
     async () => {
       await vscode.commands.executeCommand(
