@@ -112,6 +112,18 @@ writeToProfile("redux", [
       "left_option",
     ]),
     map("left_shift").toIfAlone("escape").to("left_shift"),
+    map("left_option")
+      .toIfAlone({
+        key_code: "l",
+        modifiers: ["left_option", "left_command"],
+      })
+      .to("left_option"),
+    map("right_option")
+      .toIfAlone({
+        key_code: "l",
+        modifiers: ["right_option", "right_command"],
+      })
+      .to("right_option"),
   ]),
 
   layer("spacebar", "spacebar-mode").manipulators([
