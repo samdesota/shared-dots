@@ -303,7 +303,7 @@ SwipeGestureTap = hs.eventtap.new({ hs.eventtap.event.types.gesture, hs.eventtap
     local horizontal_delta = event:getProperty(hs.eventtap.event.properties.scrollWheelEventDeltaAxis1)
 
     if windowAtCursor ~= nil then
-      resizeThrottled(horizontal_delta > 0 and 150 or -150)
+      resizeThrottled(horizontal_delta > 0 and -150 or 150)
       return true
     end
 
