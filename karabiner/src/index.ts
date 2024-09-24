@@ -1,7 +1,7 @@
 import {
   FromEvent,
   FromKeyCode,
-  FromKeyType,
+  hyperLayer,
   layer,
   map,
   rule,
@@ -103,24 +103,7 @@ function anymod(key: FromKeyCode): FromEvent {
   };
 }
 
-// ! Change '--dry-run' to your Karabiner-Elements Profile name.
-// (--dry-run print the config json into console)
-// + Create a new profile if needed.
 writeToProfile("redux", [
-  // It is not required, but recommended to put symbol alias to layers,
-  // (If you type fast, use simlayer instead, see https://evan-liu.github.io/karabiner.ts/rules/simlayer)
-  // to make it easier to write '←' instead of 'left_arrow'.
-  // Supported alias: https://github.com/evan-liu/karabiner.ts/blob/main/src/utils/key-alias.ts
-  // layer('/', 'symbol-mode').manipulators([
-  //   //     / + [ 1    2    3    4    5 ] =>
-  //   withMapper(['⌘', '⌥', '⌃', '⇧', '⇪'])((k, i) =>
-  //     map((i + 1) as NumberKeyValue).toPaste(k),
-  //   ),
-  //   withMapper(['←', '→', '↑', '↓', '␣', '⏎', '⇥', '⎋', '⌫', '⌦', '⇪'])((k) =>
-  //     map(k).toPaste(k),
-  //   ),
-  // ]),
-
   rule("Caps -> Hyper").manipulators([
     // config key mapping
     map("caps_lock").to("left_control", [
@@ -131,39 +114,11 @@ writeToProfile("redux", [
     map("left_shift").toIfAlone("escape").to("left_shift"),
   ]),
 
-  rule("layers").manipulators([
-    map({
-      simultaneous: [{ key_code: "e" }, { key_code: "r" }],
-      simultaneous_options: {
-        detect_key_down_uninterruptedly: true,
-        key_down_order: "insensitive",
-        key_up_order: "insensitive",
-        key_up_when: "any",
-        to_after_key_up: [
-          {
-            set_variable: {
-              name: "nav-layer",
-              value: 0,
-            },
-          },
-        ],
-      },
-    }).to({
-      set_variable: { name: "nav-layer", value: 1 },
-    }),
-
-    ...[
-      map(anymod("h")).to("left_arrow"),
-      map(anymod("j")).to("down_arrow"),
-      map(anymod("k")).to("up_arrow"),
-      map(anymod("l")).to("right_arrow"),
-    ].map((m) =>
-      m.condition({
-        name: "nav-layer",
-        type: "variable_if",
-        value: 1,
-      }),
-    ),
+  layer("spacebar", "spacebar-mode").manipulators([
+    map(anymod("h")).to("left_arrow"),
+    map(anymod("j")).to("down_arrow"),
+    map(anymod("k")).to("up_arrow"),
+    map(anymod("l")).to("right_arrow"),
   ]),
 
   rule("comfy mods").manipulators([...comfyMods()]),
