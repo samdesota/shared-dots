@@ -2,7 +2,7 @@
   "name": "codemods",
   "displayName": "codemods",
   "description": "Sam's custom code modifications",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -26,6 +26,10 @@
       {
         "command": "codemods.openWarpTerminalWithCurrentWorkspace",
         "title": "Codemods: Open Warp Terminal with Current Workspace"
+      },
+      {
+        "command": "codemods.closeAllTabGroupsExceptActive",
+        "title": "Codemods: Close All Tab Groups Except Active"
       }
     ],
     "keybindings": [
@@ -33,6 +37,11 @@
         "command": "codemods.openWarpTerminalWithCurrentWorkspace",
         "key": "ctrl+shift+cmd+alt+s",
         "mac": "cmd+shift+ctrl+alt+s"
+      },
+      {
+        "command": "codemods.closeAllTabGroupsExceptActive",
+        "key": "ctrl+cmd+alt+w",
+        "mac": "cmd+ctrl+alt+w"
       }
     ]
   },

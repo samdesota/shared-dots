@@ -26,6 +26,25 @@ export function activate(context: vscode.ExtensionContext) {
     return null;
   };
 
+  const closeAllTabGroupsExceptActive = async () => {
+    top: while (vscode.window.tabGroups.all.length > 1) {
+      for (const group of vscode.window.tabGroups.all) {
+        if (group.isActive) {
+          continue;
+        }
+        for (const tab of group.tabs) {
+          await vscode.window.tabGroups.close(tab);
+          continue top;
+        }
+      }
+    }
+  };
+
+  vscode.commands.registerCommand(
+    "codemods.closeAllTabGroupsExceptActive",
+    closeAllTabGroupsExceptActive,
+  );
+
   vscode.commands.registerCommand(
     "codemods.openWarpTerminalWithCurrentWorkspace",
     async () => {
