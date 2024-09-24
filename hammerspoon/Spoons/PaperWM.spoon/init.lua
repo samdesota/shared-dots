@@ -636,16 +636,6 @@ function PaperWM:start()
     return self
 end
 
-function PaperWM:resizeCursorWindow(delta)
-    local cursor_window = self:findWindowAtCursor()
-
-    if cursor_window then
-        local frame = cursor_window:frame()
-        frame.w = frame.w + delta
-        self:moveWindow(cursor_window, frame)
-    end
-end
-
 function PaperWM:loadSerializedIndexTable()
     -- get all spaces
     local spaces = {}

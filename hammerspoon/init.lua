@@ -19,6 +19,11 @@ hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "t", function()
   ]])
 end)
 
+hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "m", function()
+  print("Hello World!")
+  hs.application.launchOrFocus("DaftCloud")
+end)
+
 hs.hotkey.bind({"cmd", "alt", "ctrl"}, "h", function()
   hs.reload()
 end)
@@ -42,7 +47,6 @@ function applicationWatcher(appName, eventType, appObject)
 end
 appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
-
 
 local time_start = 0
 function TimeStart()
@@ -110,7 +114,7 @@ PaperWM:start()
 
 hs.mouse.getCurrentScreen()
 
-local function shiftTilingBy(value, animate)
+local function shiftTilingBy(value, animate, override_anchor)
   local screen = hs.mouse.getCurrentScreen()
 
   if screen == nil then
@@ -119,7 +123,7 @@ local function shiftTilingBy(value, animate)
 
   local space = hs.spaces.activeSpaceOnScreen(screen)
 
-  PaperWM:tileSpace(space, value)
+  PaperWM:tileSpace(space, value, override_anchor)
 end
 
 local shiftAmount = 0
@@ -129,9 +133,19 @@ local momentumScroll = false
 local minInitialVelocity = 500
 local moveAmountX = 0
 local moveAmountY = 0
+local windowResizeAmount = 0
 
 local function shiftThrottled(value)
   shiftAmount = shiftAmount + value
+
+  if not ShiftTimer:running() then
+    ShiftTimer:start()
+  end
+end
+
+local function resizeThrottled(value)
+  windowResizeAmount = windowResizeAmount + value
+  shiftAmount = shiftAmount + -value / 2
 
   if not ShiftTimer:running() then
     ShiftTimer:start()
@@ -206,7 +220,17 @@ ShiftTimer = hs.timer.doEvery(0.016, function()
 
   previousFrameTime = hs.timer.secondsSinceEpoch()
 
-  if shiftAmount ~= 0 then
+  if windowResizeAmount ~= 0 then
+    if windowAtCursor ~= nil then
+      local frame = windowAtCursor:frame()
+      frame.w = frame.w + windowResizeAmount
+      frame.x = frame.x + shiftAmount
+      PaperWM:moveWindow(windowAtCursor, frame)
+      shiftTilingBy(0, false, windowAtCursor)
+    end
+    windowResizeAmount = 0
+    shiftAmount = 0
+  elseif shiftAmount ~= 0 then
     shiftTilingBy(shiftAmount)
     shiftAmount = 0
   elseif math.abs(moveAmountX) ~= 0 or math.abs(moveAmountY) > 0 then
@@ -239,13 +263,6 @@ local function maxOfTable(table)
   end
   return max
 end
-
-
-
-local function resizeCurrentWindow(delta)
-  PaperWM:resizeCursorWindow(delta)
-end
-
 
 SlideWithMouseTap = hs.eventtap.new({ hs.eventtap.event.types.mouseMoved }, function(event)
   local whichFlags = event:getFlags()
@@ -283,10 +300,10 @@ end):start()
 
 SwipeGestureTap = hs.eventtap.new({ hs.eventtap.event.types.gesture, hs.eventtap.event.types.scrollWheel }, function(event)
   if event:getType() == hs.eventtap.event.types.scrollWheel then
-    local horizontal_delta = event:getProperty(hs.eventtap.event.properties.scrollWheelEventDeltaAxis2)
+    local horizontal_delta = event:getProperty(hs.eventtap.event.properties.scrollWheelEventDeltaAxis1)
 
-    if hs.eventtap.checkKeyboardModifiers()['cmd'] then
-      handleScrollGesture(horizontal_delta * 10)
+    if windowAtCursor ~= nil then
+      resizeThrottled(horizontal_delta > 0 and 150 or -150)
       return true
     end
 
