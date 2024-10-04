@@ -126,7 +126,7 @@ writeToProfile("redux", [
       .to("right_option"),
   ]),
 
-  layer("spacebar", "spacebar-mode").manipulators([
+  layer("semicolon", "navigation-mode").manipulators([
     map(anymod("h")).to("left_arrow"),
     map(anymod("j")).to("down_arrow"),
     map(anymod("k")).to("up_arrow"),
