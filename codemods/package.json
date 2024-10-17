@@ -39,6 +39,11 @@
         "mac": "cmd+shift+ctrl+alt+s"
       },
       {
+        "command": "workbench.action.moveEditorToNewWindow",
+        "key": "ctrl+shift+cmd+alt+v",
+        "mac": "cmd+shift+ctrl+alt+v"
+      },
+      {
         "command": "codemods.closeAllTabGroupsExceptActive",
         "key": "ctrl+cmd+alt+w",
         "mac": "cmd+ctrl+alt+w"

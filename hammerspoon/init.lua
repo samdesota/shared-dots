@@ -64,8 +64,8 @@ PaperWM:bindHotkeys({
   -- switch to a new focused window in tiled grid
   focus_up       = { { "ctrl", "alt", "cmd" }, "up" },
   focus_down     = { { "ctrl", "alt", "cmd" }, "down" },
-  focus_left = {{"ctrl", "alt", "cmd", "shift"}, "h"},
-  focus_right = {{"ctrl", "alt", "cmd", "shift"}, "l"},
+  focus_left = {{"ctrl", "alt", "cmd"}, "h"},
+  focus_right = {{"ctrl", "alt", "cmd"}, "l"},
 
   -- untile window (make it floating)>ri
   untile_window_at_cursor  = { { "ctrl", "alt", "cmd", "shift" }, "f" },
@@ -73,8 +73,8 @@ PaperWM:bindHotkeys({
   tile_focused_app_by_default = { {"ctrl", "alt", "cmd", "shift"}, "a" },
 
   -- move windows around in tiled grid
-  swap_left      = { { "ctrl", "alt", "cmd", "shift" }, "left" },
-  swap_right     = { { "ctrl", "alt", "cmd", "shift" }, "right" },
+  swap_left      = { { "ctrl", "alt", "cmd", "shift" }, "h" },
+  swap_right     = { { "ctrl", "alt", "cmd", "shift" }, "l" },
   swap_up        = { { "ctrl", "alt", "cmd", "shift" }, "up" },
   swap_down      = { { "ctrl", "alt", "cmd", "shift" }, "down" },
 
@@ -299,7 +299,7 @@ SwipeGestureTap = hs.eventtap.new({ hs.eventtap.event.types.gesture, hs.eventtap
     local horizontal_delta = event:getProperty(hs.eventtap.event.properties.scrollWheelEventDeltaAxis1)
 
     if windowAtCursor ~= nil then
-      resizeThrottled(horizontal_delta > 0 and -150 or 150)
+      resizeThrottled(-horizontal_delta * 50)
       return true
     end
 
@@ -308,16 +308,19 @@ SwipeGestureTap = hs.eventtap.new({ hs.eventtap.event.types.gesture, hs.eventtap
 
   --print(hs.inspect(event))
   local touches = event:getTouches()
-
   -- matching a three finger gesture
   if #touches == 3 then
     local deltas = {}
+    local xMax = nil
+    local xMin = nil
 
     -- get the touches that have a previous value, add the delta to deltas
     for _, touch in ipairs(touches) do
       -- your code herg
       local prev = touchPrev[touch.identity]
       local current = touch.normalizedPosition
+      xMax = xMax and math.max(xMax, current.x) or current.x
+      xMin = xMin and math.min(xMin, current.x) or current.x
 
       if prev ~= nil then
         local deltaX = current.x - prev.x
@@ -343,6 +346,13 @@ SwipeGestureTap = hs.eventtap.new({ hs.eventtap.event.types.gesture, hs.eventtap
       if (delta / maxDelta) < deltaEquivalenceThreshold then
         return
       end
+    end
+
+    local xDelta = xMax - xMin
+
+    -- Prevent accidental swipes whild hands are resting
+    if (xDelta > 0.65) then
+      return
     end
 
     -- shift the windows the average delta

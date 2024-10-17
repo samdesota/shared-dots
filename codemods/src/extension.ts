@@ -76,11 +76,9 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const disposable = vscode.window.tabGroups.onDidChangeTabs((change) => {
-    const opened = change.opened[0];
     const closed = change.closed[0];
 
-    console.log(opened, closed);
-
+    /*
     if (opened && opened.group.tabs.length > 1) {
       // vscode extension / settings windows
       // these can't be split out into a new window
@@ -111,6 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       moveEditorToNewWindowTimer = setTimeout(flushMoveEditors, 20);
     }
+      */
 
     // If the tab that was closed was the one we were trying to move, cancel the move
     // this means vscode is trying to move tabs from a closed window to the current one
