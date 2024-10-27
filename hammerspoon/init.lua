@@ -3,7 +3,6 @@ require('hs.mouse')
 require('spring')
 
 hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "t", function()
-  print("Hello World!")
   hs.osascript.applescript([[
     tell application "Vivaldi"
       if (count of windows) is 0 then
@@ -19,9 +18,28 @@ hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "t", function()
   ]])
 end)
 
+
+hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
+  local encodedURL = fullURL:gsub('"', '\\"')
+  hs.osascript.applescript(string.format([[
+    tell application "Vivaldi"
+      if (count of windows) is 0 then
+        activate
+        delay 0.1
+        tell application "System Events"
+            keystroke "t" using command down
+        end tell
+        delay 0.1
+        set URL of active tab of window 1 to "%s"
+      else
+        set URL of active tab of (make new window) to "%s"
+      end if
+    end tell
+  ]], encodedURL, encodedURL))
+end
+
 hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "m", function()
-  print("Hello World!")
-  hs.application.launchOrFocus("DaftCloud")
+  hs.application.launchOrFocus("Spotify")
 end)
 
 hs.hotkey.bind({"cmd", "alt", "ctrl"}, "h", function()
@@ -34,12 +52,12 @@ end)
 
 function applicationWatcher(appName, eventType, appObject)
   if (eventType == hs.application.watcher.activated) then
-      if (appName == "Code - Insiders" or appName == "Code") then
+      if (appName == "Code - Insiders" or appName == "Code" or appName == "Cursor") then
         shell_binding:disable()
       end
   end
   if (eventType == hs.application.watcher.deactivated) then
-      if (appName == "Code - Insiders" or appName == "Code") then
+      if (appName == "Code - Insiders" or appName == "Code" or appName == "Cursor") then
         print("Code is deactivated")
         shell_binding:enable()
       end
