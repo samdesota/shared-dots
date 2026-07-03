@@ -1,0 +1,5 @@
+.DS_Store
+node_modules/
+# never sync real secrets even if someone drops them here
+.env.local
+home/.env.local
