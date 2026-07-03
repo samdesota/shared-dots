@@ -40,7 +40,7 @@ If `cloud_open_pane` is not available, open the file(s) in nvim using an adjacen
 Resolve any relative file paths to absolute paths, then run:
 
 ```bash
-bash ~/.claude/skills/show_file/open-nvim-pane.sh [file ...]
+bash ~/.agents/skills/show_file/open-nvim-pane.sh [file ...]
 ```
 
 The script finds an adjacent nvim/shell pane in the current tab and opens

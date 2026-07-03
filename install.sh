@@ -70,19 +70,25 @@ if [ -d "$HOME_SRC/.config" ]; then
   done
 fi
 
-# .claude: merge per-item into ~/.claude so machine-local state (sessions,
-# history, settings.json, machine-only skills like codebase-memory) is preserved.
-if [ -d "$HOME_SRC/.claude" ]; then
-  mkdir -p "$HOME/.claude/skills" "$HOME/.claude/hooks"
-  [ -f "$HOME_SRC/.claude/CLAUDE.md" ] && link "$HOME_SRC/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
-  for s in "$HOME_SRC/.claude/skills"/*; do
+# Agent config: merge per-item so machine-local state (sessions, history,
+# settings.json, machine-only skills like codebase-memory) is preserved.
+link_agent_config() {
+  local target_dir="$1"
+  mkdir -p "$target_dir/skills" "$target_dir/hooks"
+  [ -f "$HOME_SRC/.agents/CLAUDE.md" ] && link "$HOME_SRC/.agents/CLAUDE.md" "$target_dir/CLAUDE.md"
+  for s in "$HOME_SRC/.agents/skills"/*; do
     [ -e "$s" ] || continue
-    link "$s" "$HOME/.claude/skills/$(basename "$s")"
+    link "$s" "$target_dir/skills/$(basename "$s")"
   done
-  for h in "$HOME_SRC/.claude/hooks"/*; do
+  for h in "$HOME_SRC/.agents/hooks"/*; do
     [ -e "$h" ] || continue
-    link "$h" "$HOME/.claude/hooks/$(basename "$h")"
+    link "$h" "$target_dir/hooks/$(basename "$h")"
   done
+}
+
+if [ -d "$HOME_SRC/.agents" ]; then
+  link_agent_config "$HOME/.agents"
+  link_agent_config "$HOME/.claude"
 fi
 
 # ---------- 4. shared scripts ----------
